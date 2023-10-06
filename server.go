@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
 
@@ -11,7 +13,8 @@ import (
 )
 
 var (
-	db *gorm.DB = config.InitDB()
+	conn config.Connection = config.LoadConfig()
+	db *gorm.DB = config.InitDB(conn)
 
 	userModel model.UserModel = model.UserModel{}
 	bookModel model.BookModel = model.BookModel{}
@@ -38,5 +41,5 @@ func main() {
 	route.BookRoutes(e, bookController)
 	route.BlogRoutes(e, blogController)
 
-	e.Logger.Fatal(e.Start(":8000"))
+	e.Logger.Fatal(e.Start(fmt.Sprintf("%d", conn.SERVER_PORT)))
 }
